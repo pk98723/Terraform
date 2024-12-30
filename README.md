@@ -20,7 +20,7 @@ Terraform
 # Intoduction to GIT
 
 - Git is a repository to store files in a remote repository.
-- There are many tools which helps to store data remotely like, Bitbuket, Azure DevOps, Gitlab,SourceForge etc
+- There are many tools which helps to store data remotely like, Bitbuket, Azure DevOps,Github Gitlab,SourceForge etc
 - Install Git from the https://git-scm.com/downloads.
 - Git can be installed on Linux, MAC, Windows.
 - Once the Git is downloaded, open CMD promt and enter git- you will be prompted with few inputs. It means Git is installed.
@@ -33,7 +33,8 @@ Terraform
 
 - What is Working Directory
 It is a locally created folder where all the files are saved in different forms including txt.
-Once you create a folder and initiate it then it will become your working directory
+Once you create a folder and initiate it then it will become your working directory.
+When files are in the working directory stage they are called "Untracked files ("U")
 So command here is "Git init"
 
 - What is Staging Area
@@ -54,3 +55,58 @@ So now if you understand the difference here, Only one files at a time can be co
 This is next level of Remote Repository
 Here entire files from the Local Directory will be pushed into Remote Repository
 So command here is "Git push"
+
+Example:
+Lets say we have a folder on desktop with name "Tutfarm"
+
+C:\Users\ABC\Desktop\Tutfarm> git init
+# This will initate the Tutfarm folder as working directory
+
+now lets say we have created 2 file's inside this folder with name farmexample.txt & farm.py.
+this means we are at 1st state "Working directory". Now lets push one of the file into "Staging area"
+
+# Pushing from Working directory to Staging area
+C:\Users\C:\Users\ABC\Desktop\Tutfarm> git add farm.py
+
+So after we run the above command we see that the out of 2 files from working directory, one is ready to be pushed from working directory to staging area and one is still marked as Untracked file in the working directory
+
+# Pushing from Staging area to Local directory
+C:\Users\C:\Users\ABC\Desktop\Tutfarm> git commit -m "Commiting code"
+
+"-m" means the text you wanted to understand or when someone see;s the commit they will understand the text within "".
+
+# Pushing from Local directory to Remote repository
+Here to push the files into Remote repository, an account has to be created in the remote hosts in the tools discussed above. So here I am choosing Github.
+At this point your local directory dont know what is the remote repository so it has to be declared or should be advertised by using below command:
+C:\Users\C:\Users\ABC\Desktop\Tutfarm> git remote add origin "https://github.com/ABC/Tutsform.git" -----> Example name.
+
+Now lets push
+
+C:\Users\C:\Users\ABC\Desktop\Tutfarm> git push -u origin master
+
+explanation:
+origin master - Here we have only master branch so we will be able to push it to it. Incase we have more branches then we need to specify the branch we need. So run "git branch" command to understand what are all branches available.
+
+
+
+# Important Git Commands:
+git init
+git add
+git commit
+git push
+git status
+git branch
+
+
+
+# Steps to create account or repository in Github:
+1. Login to github.com
+2. Signup with the account you would like to use
+3. Once the account is created and able to login, create a new repository.
+4. Here you will find the additional options
+.gitignore file -  Incase we do Git add/commit/push which files should be ignored and which files to be considered will be decleared.
+README file - Can be used to track all the summary of your work.
+Public - Anyone can have access to the repository
+Private - Only the account holder can see the repository
+License - There will be many open soruce projects online so we need to give license from repository incase you want to use that. It is like a security feature.
+
