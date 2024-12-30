@@ -94,7 +94,7 @@ Lets say you are in Master branch and you want to move into a different branch, 
 
 - Pull Request: Pull requests are basically used for the data being pushed from child branches to master branch validations to higher authorities. This will help us to be more securily send the data into master.
 
-Important Git Commands:
+# Important Git Commands:
 git init - Will initate the project/files
 git add - Will add the data/files into staging area
 git commit - Will commit all the changes to local repository
@@ -105,7 +105,7 @@ git checkout - Will check for the asked branch to move into or create it
 git fetch - Will bring only the changes
 
 
-Steps to create account or repository in Github:
+# Steps to create account or repository in Github:
 1. Login to github.com
 2. Signup with the account you would like to use
 3. Once the account is created and able to login, create a new repository.
@@ -117,7 +117,7 @@ Private - Only the account holder can see the repository
 License - There will be many open soruce projects online so we need to give license from repository incase you want to use that. It is like a security feature.
 
 
-General Questions:
+# General Questions:
 1. How to get the data into working directory after your fork a repository?
 Ans: Once you fork the data, you will be seeing the new repository created in your git. Now open the project click on the clone from top right hand side.
 Select HTTPS, copy the code from it. Create a new folder on desktop. Now open the cmd promt enter below command and the entire project will get cloned into the working directory.
