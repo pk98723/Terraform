@@ -87,19 +87,25 @@ C:\Users\C:\Users\ABC\Desktop\Tutfarm> git push -u origin master
 explanation:
 origin master - Here we have only master branch so we will be able to push it to it. Incase we have more branches then we need to specify the branch we need. So run "git branch" command to understand what are all branches available.
 
+- If to move into different branch from current branch
+C:\Users\C:\Users\ABC\Desktop\Tutfarm> git checkout -b "Child1"
+Explaining in deep:
+Lets say you are in Master branch and you want to move into a different branch, using checkout, it will search for the branch given in the command. Incase it finds it then the branch will be switched. Incase it dint find it then it will automatically creates the new branch as per the name given and makes it primary.
+
+- Pull Request: Pull requests are basically used for the data being pushed from child branches to master branch validations to higher authorities. This will help us to be more securily send the data into master.
+
+Important Git Commands:
+git init - Will initate the project/files
+git add - Will add the data/files into staging area
+git commit - Will commit all the changes to local repository
+git push - Will bring the changes and implement
+git status - Will get the current status in which branch it is
+git branch - Will get all the branch/s details
+git checkout - Will check for the asked branch to move into or create it
+git fetch - Will bring only the changes
 
 
-# Important Git Commands:
-git init
-git add
-git commit
-git push
-git status
-git branch
-
-
-
-# Steps to create account or repository in Github:
+Steps to create account or repository in Github:
 1. Login to github.com
 2. Signup with the account you would like to use
 3. Once the account is created and able to login, create a new repository.
@@ -110,3 +116,13 @@ Public - Anyone can have access to the repository
 Private - Only the account holder can see the repository
 License - There will be many open soruce projects online so we need to give license from repository incase you want to use that. It is like a security feature.
 
+
+General Questions:
+1. How to get the data into working directory after your fork a repository?
+Ans: Once you fork the data, you will be seeing the new repository created in your git. Now open the project click on the clone from top right hand side.
+Select HTTPS, copy the code from it. Create a new folder on desktop. Now open the cmd promt enter below command and the entire project will get cloned into the working directory.
+C:\Users\C:\Users\ABC\Desktop\Tutfarm1> git clone "https:---"
+Here, donot use git init because we just need the code which is already initiated and stored in Remote repository so we just need to clone it.
+
+2. Merge conflits
+Ans: Incase user1 did some changes and made the commits on a branch. If user2 wants to do some more changes on the same file in the same branch wher user1 did, then it will prompt a warning that few commits are already done by another user.
