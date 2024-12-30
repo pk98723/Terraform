@@ -34,13 +34,23 @@ Terraform
 - What is Working Directory
 It is a locally created folder where all the files are saved in different forms including txt.
 Once you create a folder and initiate it then it will become your working directory
+So command here is "Git init"
+
 - What is Staging Area
 This is the next level of Working Directory
 You can copy the required file from working directory to staging area one file a time.
 So that means, if you are working on 10 files and you want to store only 1 file out of it into Remote repository then you can choose that one file from the list and copy that into Staging area.
+So command here is "Git add"
+
 - What is Local Directory
 This is the next level of Staging Area
 You can commit the new files or changes in the existing files from Staging area to Local Repository.
 Here you have to commit the entire files what are in the staging area
+So command here is "Git commit"
 
 So now if you understand the difference here, Only one files at a time can be copied from Working directory to Staging area and from staging area all the files in the staging will be commited into Local Repository.
+
+- What is Remote Repository
+This is next level of Remote Repository
+Here entire files from the Local Directory will be pushed into Remote Repository
+So command here is "Git push"
