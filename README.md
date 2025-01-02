@@ -77,7 +77,9 @@ C:\Users\C:\Users\ABC\Desktop\Tutfarm> git commit -m "Commiting code"
 
 # Pushing from Local directory to Remote repository
 Here to push the files into Remote repository, an account has to be created in the remote hosts in the tools discussed above. So here I am choosing Github.
-At this point your local directory dont know what is the remote repository so it has to be declared or should be advertised by using below command:
+At this point your local directory dont know what is the remote repository so it has to be declared or should be advertised by using below 
+
+command:
 C:\Users\C:\Users\ABC\Desktop\Tutfarm> git remote add origin "https://github.com/ABC/Tutsform.git" -----> Example name.
 
 Now lets push
