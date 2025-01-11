@@ -84,8 +84,193 @@ C:/Terraform/Terraform_1.10.4_windows_amd64
 But it should not be like below
 C:/Terraform/Terraform_1.10.4_windows_amd64\terraform.exe
 
+---------------------------------------------------
+Now lets use Github Codespace to kick of the deployments incase you dont have VS/VS Code the Codespace will provide you a platform to deploy your code/resources in any provider using terraform.
+
+Steps to utilize codespace  in Github
+1. Login into Github
+2. Search for the project created (incase you are new to Github then you can fork any existing project from public to use this)
+3. On the right hand side you will find "Code", dropdown it you wll find 2 options "Local" & "Codespace"
+4. CLick on create codespace.
+5. You will be routed to a terminal
+## Lets install terraform ##
+6. Now on the serach space enter "> Add  Dev Container configuration files"
+7. You will be given two options select "Modify your active configuration" and search for "Terraform , tflint, and TFGrunt devcontainers" and click on  "ok"
+8. And select "Keep Defaults"
+9. You will see a new file called "devcontainers.JSON" is created with below configuration:
+{
+"image" : "mcr.microsoft.com/devcontainers/universal:2",
+"features": {
+  "ghcr.io/devcontainers/features/terraform:1":{}
+   }
+}
+10. Now in the terminal type "terraform --version". You will see it is not installed yet. So we need to add an aditional step but before that lets have AWS provider configuration installed.
+11. Now on the serach space enter "> Add  Dev Container configuration files"
+12. You will be given two options select "Modify your active configuration" and search for "AWS CLI devcontainers" and click on  "ok"
+13. And select "Keep Defaults"
+14. You will see the file "devcontainers.JSON" is modified with AWS provider configuration:
+{
+"image" : "mcr.microsoft.com/devcontainers/universal:2",
+"features": {
+  "ghcr.io/devcontainers/features/terraform:1":{}
+  "ghcr.io/devcontainers/features/aws-cli:1": {}
+   }
+}
+15. Now lets do the final step to configure terraform. In the search type "> Codespaces: Rebuild Container". It will ask you that are you ok to rebuild the container with the new configuration (AWS, Terraform) which was provided by you. Now click on "Rebuild"
+
+Note: Cpdespace is free for 60hr(2 CPUs and 4 GB RAM) post that it will not be active. If you want to utilize it again create a new Github account and utilize it again for 60 hr.
+---------------------------------------------
+
+First Program:Creation of EC2 instance in AWS
+
+Now lets create a new file "main.tf"
+
+Start writing with provider followed by region
+------------> provider "aws" 
+------------> region = "eu-north-1"
+
+Here we are telling Terraform that the resources will be built in AWS and the region we will be using is eu-north-1
+The syntax will be:
+"
+provider "aws" {
+  region = "eu-north-1"
+}
+"
+Now lets start with resource configuration. We will try to deploy an EC2 instance:
+
+For it we will need to define basic parameters like: resource and its type, ami (amazon image code), subnet id ( where the VM should be deployed), key pair (for authentication)
+The syntax will be:
+"
+resource "aws_instance" "example2" {
+  ami = "ami-094a9a574d190f541"
+  instance_type = "t3.micro"
+  subnet_id = "subnet-0cb81374797a535e0"
+  key_name = "kp1"
+}
+"
+Note: Incase you are creating for the first time and you are new user then create a Key pair from the AWS console and copy the name of the kay pair. As you use the free version of AWS, a default subnet will already be created for you to use, just copy the subnet id from the console.
+
+Here is the complete code:
 
 
+provider "aws" {
+  region = "eu-north-1"
+}
+
+resource "aws_instance" "example2" {
+  ami = "ami-094a9a574d190f541"
+  instance_type = "t3.micro"
+  subnet_id = "subnet-0cb81374797a535e0"
+  key_name = "kp1"
+}
+
+Now run below commands from terraform:
+
+Terraform init- which will initiate the commands
+Terraform plan - Which will do a dry run of the code you wrote and helps you understand incase of any mistakes in the code/configuration you are looking For.
+Terraform apply - Which will help to deploy the resource as per the code written
+Terraform destroy - Which will delete the resource created.
+
+This is the complete life cycle of the terraform.
+
+----------------------------------------------------------
+Now Lets Concentrate on the providers and types of providers Hashicorp will support
+
+Basically there are cartegorized into 3 types of providers that Hashicorp supports
+1. Official
+2. Partner
+3. Community
+
+Official providers are actively maintained by Hashicorp and they are Azure, AWS, GCP and Kubernates. And these are backed up by Hashicorp.
+Partner providers are those who will maintain the authentication or code ect and Hashicorp has given them authorization to use it. Examples are Alibaba and  Oracle Cloud
+Community providers are those where you and I can create entire configuration of providers and are maintained by open source. There is no official backing up by Hashicorp or official or partner providers.
+
+Documentation will be found in Hashicorp portal.
+
+----------------------------------------------------------
+Now lets demonstrate the provider code:
+
+
+providers "aws" { ------------------> We are telling the script to use provider as aws.
+  region = "us-east-1"------------------> We are telling the region to be utilized is us-east-1 to deploy the resource
+}
+
+Lets see couple of scenarios:
+
+## Multiple regions
+
+providers "aws" {
+  alias = "us-east-1" -----------------> We are telling the script that incase we have written "us-east-1" anywhere in the code then to use region as "us-east-1". We can also give any randam name as ABC, XYZ to alias name it will help you understand the region that needs to be picked by.
+  region = "us-east-1"
+}
+
+providers "aws" {
+  alias = "us-west-2"
+  region = "us-west-2"
+}
+
+Here is the complete example for deploying a EC2 instance in Multiple regions:
+
+
+providers "aws" {
+  alias = "us-east-1"
+  region = "us-east-1"
+}
+
+providers "aws" {
+  alias = "us-west-2"
+  region = "us-west-2"
+}
+
+resource "aws_instance" "example1" {
+  ami = "ami-094a9a574d190f541"
+  instance_type = "t3.micro"
+  provider = "aws.us-east-1" ------------------> We are telling the script to deploy the resource in "aws" with the region added in alias name as "us-east-1"
+  subnet_id = "subnet-0cb81374797a535e0"
+  key_name = "kp1"
+}
+
+resource "aws_instance" "example2" {
+  ami = "ami-094a9a574d190f541"
+  instance_type = "t3.micro"
+    provider = "aws.us-west-2"------------------> We are telling the script to deploy the resource in "aws" with the region added in alias name as "us-west-2"
+  subnet_id = "subnet-0cb81374797a535e0"
+  key_name = "kp1"
+}
+
+
+## Multiple providers
+
+providers "aws" { ------------------> We are telling the script to use provider as aws.
+region = "us-east-1"
+}
+providers "azurerm"{  ------------------> We are telling the script to use provider as azure.
+  subscriptionid =  "your-azure-subscription -id"
+  client_id = "your-azure-client-id"
+  client_secret = "your-azure-Client-secret"
+  tenent_id = "your-azure-tenent-id"
+}
+
+resource "aws_instance" "example1" {
+  ami = "ami-094a9a574d190f541"
+  instance_type = "t3.micro"
+  subnet_id = "subnet-0cb81374797a535e0"
+  key_name = "kp1"
+}
+
+resource "azurerm_virtual_machine" "example1" {
+  name = "example 1"
+  location = "east-us"
+  size = "standard_Bms2"
+  }
+
+  For more details go to
+  - https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs
+  - https://registry.terraform.io/providers/hashicorp/aws/latest/docs
+
+
+  ------------------------------------------------------------------
+  # Variables:
 
 
 
