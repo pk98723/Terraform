@@ -17,6 +17,78 @@ Terraform
 
 - Target date to complete by 25th Jan'25
 
+
+# Intoduction to Terraform
+
+Terraform Introduction:
+
+Lets say you are a DevOps engineer and you have simple task to deploy S3 bucket. Simple way is to go to AWS console and search for S3 service to create S3 bucket by providing basic details name, should you enable to disable of public access etc. The S3 bucket is created, it will take 2 min hardly to build it.
+
+Now this will work in a case of creating 1 instance but what if you have a requirement of creating a 100 S3 instances, the calculation will be 2 min x 100 EC2 instances and that's too huge and time consuming. 
+
+To solve this problem instead of using a User interface(provider's console)  you will follow a programmatic approach where you can use either the AWS CLI or thru scripting knowledge you will interact with AWS API's.
+
+Incase you don't know about API, simply understand it as, if you are having knowledge on Powershell or Python you can talk to the AWS services programmatically thru API as every instance in AWS has an API built by AWS which will help you to interact. So here you need understand that the API will be used to interact/call the particular service in AWS.
+
+Lets say you have written a Python program to deploy S3 bucket and you will tell your team to run the program to deploy S3 bucket so in fraction of seconds the program is created and if you have 100 requests to deploy S3 bucket also you will achieve it in very little time.
+
+But the main problem is that you need to have the programming language like what if you are asked to create VPC, VPC config, EC2, S3 bucket etc., then you need to have a good programming knowledge.
+
+Here there is a concept called Cloud Formation Templates (CFT) and in CFT it is standard template to write it in JSON/YAML language. The Providers like AWS will do the heavy lifting of the codes into the CFT which will allow you to write your infrastructure as code. In the template, you will simply write I need VPC, I need S3 bucket, I need VC2 instance etc., in terms of templating language.  (You will find many documents online on how to write a code in CFT that AWS understands)
+
+So this way you are writing your Infrastructure as code, this code can be shell scripting, Python or can be CFT template.
+
+Now there are many IAC tools for example:
+
+1. AWS - Cloud Formation Templates
+2. Azure - Resource Manager
+  - Lets say you need to deploy a VM/AKS cluster etc., you need to write the code in the understandable syntax to Resource Manager so that it will request Azure and it will create resource for you in Azure.
+3. Openstack- Heat templates
+
+You may say that I understand/advantage how IAC works and I know scripting to make my IAC tools to deploy tools but why Terraform.
+
+Now the problem is when you have all of these tools which will reduce time to deploy any resource, as you all deal with infrastructure, in an organization you might have to work on AWS, Azure, GCP openstack etc.,
+
+As a Devops engineer how many tools you would learn, so any person who is trying to automate infrastructure, Terraform came up with a universal approach that you don't need to learn all these tool, just tell me what provider you need to deploy resources and i will do that work for you.
+
+So Terraform is very very important that you just need to know how to write the code in terraform language which is Hashicorp coding language (HCL) and rest terraform will take care and that is why terraform is so important for devops engineer due to simplying our needs and because of its huge community. 
+
+You might be thinking are there are no competitor for Terraform, yes there Corssplane, Pulemy etc., are the current competitors  but terraform is pioneer and it uses the concept called API as code. You don't need to understand the what is API as code the HCL templates are converted into API's w.r.t to provider.
+
+Now lets see how to install Terraform:
+
+Use the link https://developer.hashicorp.com/terraform/install
+to install terraform on MacOS, Windows, Linux
+
+
+For Windows, steps are below:
+1. Go to above link and select Terraform for Windows version
+2. Download AMD64 binary
+3. Extract the files 
+4. copy the files into a location in C drive
+5. Now copy location of the file.
+6. Add the location to the environment variable
+7. To open environment variable: 
+- Right click on windows button
+- Select System
+- Search for Advanced System Properties/settings
+- Under Advanced tab look for Environment Variables and click on it
+- You will see User variables and System variables and in both variables you will Path.
+- Now select each path and click on Edit
+- Now click on New and enter the path in both User and System variables and click on ok
+- Now refresh your VS code terminal/Command prompt and enter "Terraform -version" to see which version is installed on your machine.
+Note: When you copy the location to the variable path, please just add the location of the terraform path and do not include .exe file name in the path.
+
+Ex: You have downloaded setup file from portal and kept the extracted files in Terraform folder in C drive. So that path will be:
+C:/Terraform/Terraform_1.10.4_windows_amd64
+But it should not be like below
+C:/Terraform/Terraform_1.10.4_windows_amd64\terraform.exe
+
+
+
+
+
+
 # Intoduction to GIT
 
 - Git is a repository to store files in a remote repository.
