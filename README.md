@@ -93,7 +93,7 @@ Steps to utilize codespace  in Github
 3. On the right hand side you will find "Code", dropdown it you wll find 2 options "Local" & "Codespace"
 4. CLick on create codespace.
 5. You will be routed to a terminal
-## Lets install terraform ##
+# Lets install terraform
 6. Now on the serach space enter "> Add  Dev Container configuration files"
 7. You will be given two options select "Modify your active configuration" and search for "Terraform , tflint, and TFGrunt devcontainers" and click on  "ok"
 8. And select "Keep Defaults"
@@ -118,7 +118,7 @@ Steps to utilize codespace  in Github
 }
 15. Now lets do the final step to configure terraform. In the search type "> Codespaces: Rebuild Container". It will ask you that are you ok to rebuild the container with the new configuration (AWS, Terraform) which was provided by you. Now click on "Rebuild"
 
-Note: Cpdespace is free for 60hr(2 CPUs and 4 GB RAM) post that it will not be active. If you want to utilize it again create a new Github account and utilize it again for 60 hr.
+Note: Codespace is free for 60hr(2 CPUs and 4 GB RAM) post that it will not be active. If you want to utilize it again create a new Github account and utilize it again for 60 hr.
 ---------------------------------------------
 
 First Program:Creation of EC2 instance in AWS
