@@ -271,7 +271,196 @@ resource "azurerm_virtual_machine" "example1" {
 
   ------------------------------------------------------------------
   # Variables:
+The Variables are used to parameterized the value which can be used in different projects at a time.
 
+There are 2 types of variables:
+1. Input variable   -----------------> WHich will be used when you pass a value to the code then it is called input variable.
+2. Output variable  -----------------> Which will be used to print the outout of the code. Ex: You are deploing a EC2 instance and you want to print the public ip of it then this output variable is used.
+
+Lets dig-in more and see with example:
+Syntax example:
+variable "example_var"{
+  description = "An example input variable"
+  type = string
+  default = "default_value"
+}
+
+Lets implement the real example by taking the above script used in Multiple providers/regions:
+
+providers "aws" {
+region = "us-east-1"
+}
+variable "ami"{
+  description = "amazon instance id"
+  type = string
+  default = "ami-123456789"
+}
+variable "instance_type"{
+  description = "Instance type of a aws instance"
+  type = string
+  default = "t3.micro"
+}
+resource "aws_instance" "example1" {
+  ami = "var.ami"  ---------------------> Which will call the ami value stored in the variable.
+  instance_type = "var.instance_type"--------------------> Which will call the instance type value stored in the variable.
+  subnet_id = "subnet-0cb81374797a535e0"
+  key_name = "kp1"
+}
+output "public_ip" {
+  description = "The public ip assigned to the EC2 instance"
+  value = "aws_instance.example1.public_ip"  -------------------> Which will call the output of aws instance of example1's public ip.
+}
+
+In the above script we have parameteroized ami and instance_type. So script can be re-usable for any instance as we are passing variable type. The main point to understand here is the variables section is call first and followed by resource section within the same code.
+
+Global structure for main.tf will be :
+
+main.tf
+      |____\
+           /   provider.tf
+               input.tf
+               output.tf
+               main.tf
+
+#Terraform.tfvars:
+
+This tfvars is a game changer, for example you have 3 different environments and in each environment you want to create EC2 instance with type as T2.micro, T2.medium, T2.small. The the tfvars will come into picture. 
+
+In the last example, you have seen the variables are called within the same code but tfvars are used as global varialbles and will be utilized across all the environments.When you run the code the input and output variables are replaced/updated by values from tfvars. When you terraform.apply command it will look for tfvars files by default, incase it dint find the tfvars file then it will consider the input and output variables.
+
+By default the name Terraform.tfvars is the key-value place which code will search for but when you are utilizing it in the different environments then you will defnietly create 3 different tfvars file and lets say you have create dev.tfvars, uat.tfvars and prod.tfvars then you will need to provide it during the "terraform.apply -dev.tfvars". Then only yyou will see the development resources are built.
+
+We will see the indept example shortly.
+
+# Conditional Expressions:
+
+The Conditional expressions are used within the code to define conditional logic. They are allowed to make decisions or set your values.
+
+Syntax example:
+Condition ? true_val : false_val
+
+variable "environment"{
+  description = "environment of the resources to be deployed"
+  type = string
+  default = "development"
+}
+
+variable "production_subnet_cidr"{
+  description = "production environment subnet range"
+  type = string
+  default = "10.0.0.1/16"
+}
+
+variable "development_subnet_cidr"{
+  description = "development environment subnet range"
+  type = string
+  default = "10.0.0.2/16"
+}
+
+resource "aws_security_group" "example1"{
+  name = "example-sg"
+  description = "deployment of security group"
+
+  ingress{
+    from_port = 22
+    to_port = 22
+    protocol = "TCP"
+    cidr_block = var.environment == "production" ? [production_subnet_cidr] : [development_subnet_cidr]
+  }
+}
+
+
+------------------------------------------------------
+
+# Built-in Functions
+
+As every coding language has built-in functions Terraform also have built-in functions and few are below:
+
+1. map ---> Creates a map from list of key and list of value
+Syntax example :
+map(key, value)
+
+Code
+variable "key"{
+  type = list
+  default ["Fruit", "vegetable"]
+}
+variable "value"{
+  type = list
+  default = ["apple", "carrot"]
+}
+output "map_list"{
+  map(var.key, var.value)
+}
+
+2. lenght ----> Returns the lenght of the list
+Syntax example :
+length(list)
+
+Code:
+variable "fruits"{
+  type = list
+  default = ["apple", "banana", "carrot"]
+}
+output "lenght_list"{
+  lenght(var.fruits)
+}
+
+3. Concat ----> Combines Multiple list into single list
+Syntax example :
+concat(list1, list2, ...)
+
+Code:
+variable "first"{
+  type = list
+  default = ["a", "b"]
+}
+variable "second"{
+  type = list
+  default = ["c", "d"]
+}
+output "combined_list"{
+  value = concat (var.first, var.second)
+}
+
+4. element ---> Returns the elements at the specific index in a list
+Syntax example :
+element(list, index)
+
+Code:
+variable "fruits"{
+  type = list
+  default =["apple", "banana", "carrot"]
+}
+output "Fruits_list"{
+  value = element (var.fruits, 1)
+}
+
+5. join ---> joins the elements of a list into a single string using a specific seperator
+Syntax example :
+lookup(seperator, list)
+
+Code:
+variable "fruits"{
+  type = list
+  default =["apple", "banana", "carrot"]
+}
+output "Fruits_list"{
+  value = join (",", var.fruits)
+}
+
+6. lookup ---> Retrives a value associated with a specific key in a map.
+Syntax example :
+lookup(map, key)
+
+Code:
+variable "fruits"{
+  type = map(string)
+  default = ["Fruits" ="apple", "vegetable" = "carrot"]
+}
+output "value"{
+  value = lookup(var.fruits, "vegetable")
+}
 
 
 # Intoduction to GIT
