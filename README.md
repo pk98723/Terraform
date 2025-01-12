@@ -528,7 +528,26 @@ output "public-ip-address" { ------------------> We are printing the public ip o
   value = aws_instance.example.public_ip
   description = "to print the output of ec2 instance public ip"
 }
+# Statefile
 
+Stateline is heart of terraform, using terraform the Statefile it will store the infrastructure that terraform created.
+
+Lets understand a bit deep into this, If you are tring to create an EC2 instance followed by a S3 bucket. When you have written your code with all your parameters and try to run terraform apply, it will create 2 things, one is it will create the resources in AWS and second, it will create a copy of the resources inside the terraform as a record with the name Statefile.
+
+The benifit of this file is if you want to add additional inputs to your resources like any confiuration upgrades or tags etc., ofcourse you can use UI to make the changes but it is not a best practice as we wanted to automate the deployments. You will make the changes to change code and when you hit terraform apply then terraform will search for statefile to see if there is any existing configuration with the current ask and checks for the differences and do an incremental update to the infrastructure in AWS. Lets say there is no statefile in terraform when initial deployment is done, then terraform will think you are doing a new deployment and it will create the new infrastructure in AWS with the latest updates you provided in the code.
+
+Same applies for delete (destroy) of the resource.
+
+Offcourse there are drawbacks  for this statefile:
+1. Any action that you perform thru terraform like you want to create ec2/s3/eks etc, it will create in the statefile. But what if you dont want to add any sensitive information like passwords/keypass inputs then statefile will not understand or think the in a code there are few sensitive informations within the code and it should be morphed or not to show it to outside world by default who ever has access to the terraform code files can see the statefile.
+2. To over come above drawback, engineers have stated using version control system (VCS) tolls like Github, bitbucket etc., where for only set of people has access to the code. But here is another challenge. Lets say you have an update to your code and you want to make changes to it. So you will download/clone your repository to local and do the changes. Incase you commit the code post changes to it without testing it locally then the code pushed into VCS has updated code and previous version statefile that means you have updated the code but you dint tested that locally so the statefile remains the same as the previous downloaded file. Note that the statefile will only get updated when terraform apply command it run until then there will not be any changes to statefile. So if engineer did the merge/pull request of the code into VPC without testing it locally then the total changes you did will not be noticed when code will mess up when you do a terraform apply in actual project. 
+
+----------------------------------------------------------------------------------
+# Remote Backend
+
+To address above drawback Remote Backend concept has came into picture. 
+
+Lets take an example of deploying an EC2 instance, so you have deployed the code, perfomed terraform init/plan/apply and deployed the resources. Now lets say you want to do a code change then this time you will use a remote repository to store your statefile like S3 bucket in AWS, Storage account in Azure etc., where we can restrict the access to these resources in the organization thru IAM and everytime if an engineer wants to make changes to the code then they can clone the repository to their local without the statefile and do the changes and do the apply to test the code and do a merge/pull request back to the actual repository and when you do terraform init, terraform will understand that this code is using remote backend concept and it will search for it to update the statefile with the latest code changes.
 
 
 # Intoduction to GIT
