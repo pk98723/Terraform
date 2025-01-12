@@ -462,6 +462,74 @@ output "value"{
   value = lookup(var.fruits, "vegetable")
 }
 
+# Modules
+
+This is a concept which will help to cut down the larger code into small chunks in other works we are moving into micro services from monolithic architecrure. Here the key benifits are:
+- Easy to dig in when we are working on a bug
+- Easy to secure the core values between project to project
+- Easy to use a portion of the large script
+- Easy to scale up and down
+- Easy to reuse the script
+- Easy to versioning
+- Easy to maintaine
+- Easy to take ownership of the portion of the script
+- Easy to test the part of the script needed.
+
+Lets dig in more into the codeing part now:
+
+We have to create following .tf files in order to modularize the script, lets take an example of creating Ec2 instance:
+
+- Create a folder with name "Modules" (treat it as a parent folder)
+- Create a sub foler with name ec2_instance(here this is a child folder)
+note: According to the project requirement, the child folders can be created. Here we are creating only EC2 instance.
+- Create a main.tf, consider it as main file which is like mother file and all other files we are going to create will be treated as child files and every file will be referenced in monthe file.
+Code:
+provider "aws" {
+  region = "eu-north-1"
+}
+
+module "ec2_instance"{
+    source = "./modules/ec2_instnace"
+    ami_value = "ami-0ce60eb951b42c795"
+    instance_type_value = "t3.micro"
+    subnet_id_value = "subnet-0cb81374797a535e0"
+}
+
+- Now lets create the ec2 instance configuration files under ec2_instance folder.
+- Create providers.tf file with below content
+code:
+provider "aws" {---------------------> We are defining which provider to be taken
+  region = "eu-north-1"--------------> We are defining which region the resources are to be provisioned.
+}
+
+- Create variable.tf file with below content
+code:
+    variable "ami_value" { ------------------> We are parameterising ami value of the ec2 instance
+      description = "the id of ami"
+    }
+    variable "instance_type" {  ------------------> We are parameterising the instance type of the ec2 instance
+      description = "the instance type value"
+    }
+    variable "subnet_id" {  ------------------> We are parameterising subnet if value of the ec2 instance where we are directing the code to deploy.
+      description = "the id of the subnet"
+    }
+    
+- Create main.tf file with below content
+code:
+resource "aws_instance" "example1" {  ------------> Type of the resource is being built and with a name for it.
+    ami = var.ami_value ----------------> We are calling the var ami_value from the variable file.
+    instance_type = var.instance_type----------------> We are calling the instance_type value from the variable file.
+    subnet_id = var.subnet_id----------------> We are calling the var subnet_id from the variable file.
+}
+
+- Create output.tf file with below content
+code:
+output "public-ip-address" { ------------------> We are printing the public ip of the EC2 instance as an output to validate the instance is provisioned perfectly or not
+  value = aws_instance.example.public_ip
+  description = "to print the output of ec2 instance public ip"
+}
+
+
 
 # Intoduction to GIT
 
