@@ -549,6 +549,71 @@ To address above drawback Remote Backend concept has came into picture.
 
 Lets take an example of deploying an EC2 instance, so you have deployed the code, perfomed terraform init/plan/apply and deployed the resources. Now lets say you want to do a code change then this time you will use a remote repository to store your statefile like S3 bucket in AWS, Storage account in Azure etc., where we can restrict the access to these resources in the organization thru IAM and everytime if an engineer wants to make changes to the code then they can clone the repository to their local without the statefile and do the changes and do the apply to test the code and do a merge/pull request back to the actual repository and when you do terraform init, terraform will understand that this code is using remote backend concept and it will search for it to update the statefile with the latest code changes.
 
+Lets see this in action now:
+- To create the remote backend we need to have a storage in place and while using AWS, S3 bucket is the best option. So lets create a storage account first before we make it as remote backend.
+- Create a EC2 instance(we are just adding it as an additional one, doesnt make any difference if you remove it also), follow by S3 bucket. This S3 bucket will be used as statefile remote backend going forward. At this point of time you will have to add the below code in main.tf only.
+
+provider "aws" {
+  region = "eu-north-1"
+}
+
+resource "aws_instance" "example2" {
+  ami = "ami-094a9a574d190f541"
+  instance_type = "t3.micro"
+  subnet_id = "subnet-0cb81374797a535e0"
+}
+
+resource "aws_s3_bucket" "s3_bucket" { -------------------> Type of the resource is being defined
+    bucket = "pavant3micro-ec2-temp-bucket-4182-7278-9659"---------------> Name of the S3 bucket is being defined
+}
+
+Note: You can also create it manually since we wanted to automate, we are utilizing terraform to do it for us.
+
+- Post execution of the you will find the statefile.tf created in which the record of the execution and resoruces created data is stored.
+- Now lets have the remove backend in place as we have S3 created, for that please create a backend.tf file with below content. You can also get this example confiuration at https://developer.hashicorp.com/terraform/language/backend/s3.
+
+terraform {
+  backend "s3" { -----------------------> Defining S3 as Backend
+    bucket = "pavant3micro-ec2-temp-bucket-4182-7278-9659" -----------------> Giving it a unique name
+    key    = "pavan/terraform.tfstate" --------------------> Stating the path where the statefile has to be stored
+    region = "eu-north-1" ----------------> Defining the region
+  }
+}
+
+- Now after the backend.tf is built, delete the statefile.tf which was created when EC2 and S3 were created and run below commands:
+terraform init
+terraform apply
+
+- Now you will notice that S3 is being accepted as backend storage and it started execution of the backend.tf code in apply.
+
+- Here we are add IAM permissions and do the necessary changes to restrict the access to statefile.
+
+
+# Locks
+
+It will control the statefile w.r.t locking mechanism. 
+
+Lets say a person A is trying to execute a code and at the same time person B is also trying to utilize the code and trying to execute it. A has made some changes to the file so the B. Now terraform will get confused incase they are executed at same time as to which has to be run first.
+
+Now to overcome this problem locks are introduced. When A person execute the project with a very minor difference in time with B then the statefile will be locked to person A and the person B has to wait until the work is completed for person A.
+
+So since the statefile is maintained remotely on AWS S3 bucket the locks should also be maintained with records in AWS and we can utilize dynamo DB to do the job for us.
+
+- Lets create a dynamo DB using the below code.
+
+Code:
+resource "aws_dynamodb_table" "terraform_lock" { -------------------------> Defining Dynamo DB
+  name = "terraform_lock" -----------------------> Defining the name of the Dynamo DB table
+  billing_mode = "PAY_PER_REQUEST" -------------> Defining the billing mode
+  hash_key = "LockID" ----------------> Here you are locking the statefile for your ID which will be done during the execution of the code.
+
+  attribute {
+    name = "LockID"
+    type = "S"
+  }
+}
+
+Note: The Dynamo DB is paid service and it is billed per request. Just be causious while utilizing it.
 
 # Intoduction to GIT
 
